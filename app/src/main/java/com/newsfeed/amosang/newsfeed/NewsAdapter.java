@@ -66,11 +66,13 @@ public class NewsAdapter extends ArrayAdapter<NewsObj>{
         String imgURL;
     }
 
+    //only 2 layouts exist
     @Override
     public int getViewTypeCount() {
         return 2;
     }
 
+    //determine which layout to use
     @Override
     public int getItemViewType(int position) {
         if(position==0){
@@ -89,7 +91,6 @@ public class NewsAdapter extends ArrayAdapter<NewsObj>{
         if(position==0){
 
             NewsObj currNews = news.get(position);
-//            DataHandler dh;
             if(convertView==null){
                 LayoutInflater inflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 row = inflater.inflate(R.layout.firstnews,parent,false);
@@ -101,17 +102,15 @@ public class NewsAdapter extends ArrayAdapter<NewsObj>{
             }else{
                 dh = (DataHandler)row.getTag();
             }
-//            NewsObj no = (NewsObj)this.getItem(position);
             row.setTag(R.id.newsIcon,row.findViewById(R.id.newsIcon));
+
             dh.imgURL = no.getImgurl();
-//            new AsyncDownloadTask().execute(row,no.getImgurl(),dh.imgURL);
             dh.newsTitle.setText(no.getTitle());
             dh.newsDate.setText(no.getDate());
 
         }else{
 
             NewsObj currNews = news.get(position);
-//            DataHandler dh;
             if(convertView==null){
                 LayoutInflater inflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 row = inflater.inflate(R.layout.newslist,parent,false);
@@ -123,10 +122,8 @@ public class NewsAdapter extends ArrayAdapter<NewsObj>{
             }else{
                 dh = (DataHandler)row.getTag();
             }
-//            NewsObj no = (NewsObj)this.getItem(position);
             row.setTag(R.id.newsIcon, row.findViewById(R.id.newsIcon));
             dh.imgURL = no.getImgurl();
-//            new AsyncDownloadTask().execute(row,no.getImgurl(),dh.imgURL);
             dh.newsTitle.setText(no.getTitle());
             dh.newsDate.setText(no.getDate());
 
@@ -147,6 +144,7 @@ public class NewsAdapter extends ArrayAdapter<NewsObj>{
             super.onPreExecute();
         }
 
+        //load images
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             if(bitmap!=null&&view!=null&&((DataHandler)view.getTag()).imgURL.equals(this.imgURL)){
@@ -154,6 +152,7 @@ public class NewsAdapter extends ArrayAdapter<NewsObj>{
                 newsIcon.setImageBitmap(bitmap);
             }
         }
+
 
         @Override
         protected Bitmap doInBackground(Object... params) {
