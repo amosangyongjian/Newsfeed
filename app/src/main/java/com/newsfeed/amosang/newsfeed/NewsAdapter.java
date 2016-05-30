@@ -63,7 +63,7 @@ public class NewsAdapter extends ArrayAdapter<NewsObj>{
         ImageView newsIcon;
         TextView newsTitle;
         TextView newsDate;
-        TextView imgURL;
+        String imgURL;
     }
 
     @Override
@@ -84,10 +84,12 @@ public class NewsAdapter extends ArrayAdapter<NewsObj>{
     public View getView(int position, View convertView, ViewGroup parent) {
 
         View row = convertView;
+        NewsObj no = (NewsObj)this.getItem(position);
+        DataHandler dh;
         if(position==0){
 
             NewsObj currNews = news.get(position);
-            DataHandler dh;
+//            DataHandler dh;
             if(convertView==null){
                 LayoutInflater inflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 row = inflater.inflate(R.layout.firstnews,parent,false);
@@ -99,17 +101,17 @@ public class NewsAdapter extends ArrayAdapter<NewsObj>{
             }else{
                 dh = (DataHandler)row.getTag();
             }
-            NewsObj no = (NewsObj)this.getItem(position);
+//            NewsObj no = (NewsObj)this.getItem(position);
             row.setTag(R.id.newsIcon,row.findViewById(R.id.newsIcon));
-            new AsyncDownloadTask().execute(row,no.getImgurl());
-//            Picasso.with(context).load(no.getImgurl()).into(dh.newsIcon);
+            dh.imgURL = no.getImgurl();
+//            new AsyncDownloadTask().execute(row,no.getImgurl(),dh.imgURL);
             dh.newsTitle.setText(no.getTitle());
             dh.newsDate.setText(no.getDate());
 
         }else{
 
             NewsObj currNews = news.get(position);
-            DataHandler dh;
+//            DataHandler dh;
             if(convertView==null){
                 LayoutInflater inflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 row = inflater.inflate(R.layout.newslist,parent,false);
@@ -121,36 +123,24 @@ public class NewsAdapter extends ArrayAdapter<NewsObj>{
             }else{
                 dh = (DataHandler)row.getTag();
             }
-            NewsObj no = (NewsObj)this.getItem(position);
+//            NewsObj no = (NewsObj)this.getItem(position);
             row.setTag(R.id.newsIcon, row.findViewById(R.id.newsIcon));
-            new AsyncDownloadTask().execute(row,no.getImgurl());
-//            Picasso.with(context).load(no.getImgurl()).into(dh.newsIcon);
+            dh.imgURL = no.getImgurl();
+//            new AsyncDownloadTask().execute(row,no.getImgurl(),dh.imgURL);
             dh.newsTitle.setText(no.getTitle());
             dh.newsDate.setText(no.getDate());
 
         }
+        new AsyncDownloadTask().execute(row,no.getImgurl(),dh.imgURL);
         return row;
     }
 
-    public class NewsIcon{
-        View view;
-        NewsIcon(View view){
-            this.view = view;
-        }
-
-        public View getView() {
-            return view;
-        }
-
-        public void setView(View view) {
-            this.view = view;
-        }
-    }
 
     private class AsyncDownloadTask extends AsyncTask<Object, String, Bitmap>{
 
         private View view;
         private Bitmap bitmap = null;
+        private String imgURL;
 
         @Override
         protected void onPreExecute() {
@@ -159,7 +149,7 @@ public class NewsAdapter extends ArrayAdapter<NewsObj>{
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            if(bitmap!=null&&view!=null){
+            if(bitmap!=null&&view!=null&&((DataHandler)view.getTag()).imgURL.equals(this.imgURL)){
                 ImageView newsIcon = (ImageView)view.getTag(R.id.newsIcon);
                 newsIcon.setImageBitmap(bitmap);
             }
@@ -169,6 +159,7 @@ public class NewsAdapter extends ArrayAdapter<NewsObj>{
         protected Bitmap doInBackground(Object... params) {
             view = (View)params[0];
             String uri = (String)params[1];
+            imgURL = (String)params[2];
             try{
                 InputStream inputStream = new URL(uri).openStream();
                 bitmap = BitmapFactory.decodeStream(inputStream);
