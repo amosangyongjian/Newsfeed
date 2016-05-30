@@ -102,7 +102,7 @@ public class NewsAdapter extends ArrayAdapter<NewsObj>{
             }else{
                 dh = (DataHandler)row.getTag();
             }
-            row.setTag(R.id.newsIcon,row.findViewById(R.id.newsIcon));
+            //row.setTag(R.id.newsIcon,row.findViewById(R.id.newsIcon));
 
             dh.imgURL = no.getImgurl();
             dh.newsTitle.setText(no.getTitle());
@@ -122,12 +122,13 @@ public class NewsAdapter extends ArrayAdapter<NewsObj>{
             }else{
                 dh = (DataHandler)row.getTag();
             }
-            row.setTag(R.id.newsIcon, row.findViewById(R.id.newsIcon));
+
             dh.imgURL = no.getImgurl();
             dh.newsTitle.setText(no.getTitle());
             dh.newsDate.setText(no.getDate());
 
         }
+        row.setTag(R.id.newsIcon, row.findViewById(R.id.newsIcon));
         new AsyncDownloadTask().execute(row,no.getImgurl(),dh.imgURL);
         return row;
     }
