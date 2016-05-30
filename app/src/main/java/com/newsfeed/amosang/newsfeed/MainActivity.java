@@ -1,16 +1,20 @@
 package com.newsfeed.amosang.newsfeed;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -46,19 +50,34 @@ public class MainActivity extends AppCompatActivity {
     private NewsAdapter na;
     private ListView lv;
     private ProgressDialog progressDialog;
+    private ImageButton refreshButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        if(getSupportActionBar()!=null){
+            setSupportActionBar(toolbar);
+        }
+
         initializeUI();
     }
 
     private void initializeUI(){
+        refreshButton = (ImageButton)findViewById(R.id.refresh);
         na = new NewsAdapter(new ArrayList<NewsObj>(),this);
         lv = (ListView)findViewById(R.id.lv_newslist);
         lv.setAdapter(na);
         new AsyncLoadData().execute();
+
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AsyncLoadData().execute();
+            }
+        });
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -84,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
             if(progressDialog.isShowing()){
                 progressDialog.dismiss();
             }
-            Log.d("RECEIVEJSONOBJECTLEVEL0",jsonString);
-            constructJSON(jsonString);
+            Log.d("RECEIVEJSONOBJECTLEVEL0", jsonString);
+//            constructJSON(jsonString);
             na.setNews(constructJSON(jsonString));
             na.notifyDataSetChanged();
         }

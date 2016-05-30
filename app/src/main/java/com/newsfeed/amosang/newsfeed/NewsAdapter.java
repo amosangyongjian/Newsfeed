@@ -12,8 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -134,11 +132,26 @@ public class NewsAdapter extends ArrayAdapter<NewsObj>{
         return row;
     }
 
+    public class NewsIcon{
+        View view;
+        NewsIcon(View view){
+            this.view = view;
+        }
+
+        public View getView() {
+            return view;
+        }
+
+        public void setView(View view) {
+            this.view = view;
+        }
+    }
 
     private class AsyncDownloadTask extends AsyncTask<Object, String, Bitmap>{
 
         private View view;
         private Bitmap bitmap = null;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
